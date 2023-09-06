@@ -23,7 +23,7 @@ func noLock(keyCode string) {
 	for {
 		simulateKeyPress(keyCode)
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(3 * time.Second)
 	}
 }
 
@@ -45,7 +45,7 @@ func main() {
 
 	go noLock(keyCode)
 
-	fmt.Println("Running")
+	fmt.Println("Running. . . . .")
 
 	// Wait for an interrupt signal (Ctrl+C)
 	<-interrupt
