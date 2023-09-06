@@ -1,6 +1,5 @@
 // This code is use to prevent Windows from locking out with the use of PowerShell commands to simulate key presses.
 
-
 package main
 
 import (
