@@ -1,8 +1,7 @@
-// This code is use to prevent Windows from locking out with the use of PowerShell commands to simulate key presses.
-
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,9 +11,15 @@ import (
 )
 
 func simulateKeyPress(keyCode string) {
-	psScript := fmt.Sprintf(`[System.Windows.Forms.SendKeys]::SendWait("{%s}")`, keyCode)
+	psScript := fmt.Sprintf(`Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait("%s")`, keyCode)
 	cmd := exec.Command("powershell", "-Command", psScript)
-	cmd.Run()
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Error executing PowerShell command:", err)
+	}
 }
 
 func noLock(keyCode string) {
@@ -22,7 +27,6 @@ func noLock(keyCode string) {
 
 	for {
 		simulateKeyPress(keyCode)
-
 		time.Sleep(3 * time.Second)
 	}
 }
@@ -31,8 +35,8 @@ func main() {
 	fmt.Println("\nPrevent Windows screen lock")
 	fmt.Print("Enter key code to simulate (e.g., C): ")
 
-	var keyCode string
-	_, err := fmt.Scan(&keyCode)
+	reader := bufio.NewReader(os.Stdin)
+	keyCode, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Input error:", err)
 		return
