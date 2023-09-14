@@ -10,11 +10,11 @@ import (
 
 func generatePassword(length int) string {
 	characters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+"
-	rand.Seed(time.Now().UnixNano())
+	source := rand.NewSource(time.Now().UnixNano())
 	password := make([]byte, length)
 
 	for i := 0; i < length; i++ {
-		password[i] = characters[rand.Intn(len(characters))]
+		password[i] = characters[rand.New(source).Intn(len(characters))]
 	}
 
 	return string(password)
